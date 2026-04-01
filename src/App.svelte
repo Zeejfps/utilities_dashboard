@@ -18,7 +18,7 @@
 </script>
 
 {#if $auth.token}
-  <div class="min-h-screen bg-bg">
+  <div class="h-screen overflow-y-auto overscroll-none bg-bg">
     <Header />
 
     <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6">
@@ -37,5 +37,7 @@
     </div>
   </div>
 {:else}
-  <Login />
+  <div class="h-screen overflow-y-auto">
+    <Login />
+  </div>
 {/if}
