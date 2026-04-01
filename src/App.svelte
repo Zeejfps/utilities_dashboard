@@ -8,7 +8,6 @@
   import AccountInfo from './components/AccountInfo.svelte';
   import UsageChart from './components/UsageChart.svelte';
 
-  import Footer from './components/Footer.svelte';
 
   $effect(() => {
     if ($auth.token) {
@@ -31,10 +30,6 @@
 
       <UsageChart />
     </main>
-
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <Footer />
-    </div>
   </div>
 {:else}
   <div class="h-screen overflow-y-auto">

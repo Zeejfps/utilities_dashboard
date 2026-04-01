@@ -37,7 +37,7 @@
 <header class="bg-accent border-b border-border">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
     <div class="flex items-center gap-2.5">
-      <img src="/hsv_utils_logo.png" alt="" class="h-8 sm:h-10" />
+      <img src="{import.meta.env.BASE_URL}logo.png" alt="" class="h-8 sm:h-10" />
       <span class="text-white text-lg sm:text-xl font-semibold tracking-tight">Utilities Dashboard</span>
     </div>
 
