@@ -5,7 +5,7 @@
 
 <div class="bg-surface rounded-2xl border border-border p-6 sm:p-8">
   {#if $billingLoading}
-    <div class="animate-pulse flex flex-col sm:flex-row sm:justify-between gap-6">
+    <div class="animate-pulse flex flex-col sm:flex-row sm:justify-between gap-6 min-h-[120px]">
       <div class="flex flex-col gap-3">
         <div class="h-4 bg-border rounded w-24"></div>
         <div class="h-10 bg-border rounded w-40"></div>
