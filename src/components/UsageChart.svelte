@@ -31,6 +31,15 @@
 
   type ViewMode = 'both' | 'usage' | 'cost';
   let viewMode: ViewMode = $state('both');
+  let isMobile = $state(window.innerWidth < 640);
+
+  $effect(() => {
+    const mql = window.matchMedia('(max-width: 639px)');
+    const handler = (e: MediaQueryListEvent) => { isMobile = e.matches; };
+    isMobile = mql.matches;
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  });
 
   const chartData = $derived($electric ? getChartData($electric) : []);
   const labels = $derived(chartData.map((d) => formatMonth(d.month, d.year)));
@@ -66,8 +75,8 @@
               backgroundColor: 'rgba(56, 189, 248, 0.1)',
               borderWidth: 2,
               pointBackgroundColor: '#38bdf8',
-              pointRadius: 4,
-              pointHoverRadius: 6,
+              pointRadius: isMobile ? 2 : 4,
+              pointHoverRadius: isMobile ? 4 : 6,
               tension: 0.3,
               fill: true,
               yAxisID: 'y1',
@@ -81,6 +90,12 @@
   const options = $derived({
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: isMobile ? 0 : 4,
+        right: isMobile ? 0 : 4,
+      },
+    },
     interaction: {
       mode: 'index' as const,
       intersect: false,
@@ -110,7 +125,14 @@
     scales: {
       x: {
         grid: { color: 'rgba(42, 45, 58, 0.5)' },
-        ticks: { color: '#6b7280', font: { size: 11 } },
+        ticks: {
+          color: '#6b7280',
+          font: { size: isMobile ? 9 : 11 },
+          maxRotation: isMobile ? 45 : 0,
+          minRotation: isMobile ? 45 : 0,
+          autoSkip: true,
+          maxTicksLimit: isMobile ? 6 : 12,
+        },
       },
       y: {
         display: viewMode !== 'cost',
@@ -118,13 +140,13 @@
         grid: { color: 'rgba(42, 45, 58, 0.5)' },
         ticks: {
           color: '#6b7280',
-          font: { size: 11 },
+          font: { size: isMobile ? 9 : 11 },
           callback(value: any) {
             return `${value.toLocaleString()}`;
           },
         },
         title: {
-          display: true,
+          display: !isMobile,
           text: 'KWH',
           color: '#6b7280',
         },
@@ -135,13 +157,13 @@
         grid: { drawOnChartArea: false },
         ticks: {
           color: '#6b7280',
-          font: { size: 11 },
+          font: { size: isMobile ? 9 : 11 },
           callback(value: any) {
             return `$${value}`;
           },
         },
         title: {
-          display: true,
+          display: !isMobile,
           text: 'Cost',
           color: '#6b7280',
         },
@@ -150,24 +172,24 @@
   });
 </script>
 
-<div class="bg-surface rounded-2xl border border-border p-6">
+<div class="bg-surface rounded-2xl border border-border p-3 sm:p-6">
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
     <h2 class="text-white text-base font-semibold">Usage Over Time</h2>
-    <div class="flex gap-1 bg-bg rounded-lg p-1">
+    <div class="flex gap-1 bg-bg rounded-lg p-1 w-full sm:w-auto">
       <button
-        class="px-3 py-1.5 text-xs font-medium rounded-md transition-colors {viewMode === 'both' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'}"
+        class="flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-md transition-colors {viewMode === 'both' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'}"
         onclick={() => viewMode = 'both'}
       >
         Both
       </button>
       <button
-        class="px-3 py-1.5 text-xs font-medium rounded-md transition-colors {viewMode === 'usage' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'}"
+        class="flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-md transition-colors {viewMode === 'usage' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'}"
         onclick={() => viewMode = 'usage'}
       >
         KWH
       </button>
       <button
-        class="px-3 py-1.5 text-xs font-medium rounded-md transition-colors {viewMode === 'cost' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'}"
+        class="flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-md transition-colors {viewMode === 'cost' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'}"
         onclick={() => viewMode = 'cost'}
       >
         Cost
@@ -175,16 +197,18 @@
     </div>
   </div>
 
-  <div class="flex gap-4 mb-4 text-xs text-text-muted">
-    <span class="flex items-center gap-1.5">
-      <span class="w-3 h-3 rounded-sm bg-accent inline-block"></span>
-      Usage (KWH)
-    </span>
-    <span class="flex items-center gap-1.5">
-      <span class="w-3 h-3 rounded-full bg-cost-line inline-block"></span>
-      Cost ($)
-    </span>
-  </div>
+  {#if viewMode === 'both'}
+    <div class="flex gap-4 mb-4 text-xs text-text-muted">
+      <span class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded-sm bg-accent inline-block"></span>
+        Usage (KWH)
+      </span>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded-full bg-cost-line inline-block"></span>
+        Cost ($)
+      </span>
+    </div>
+  {/if}
 
   <div class="h-[300px] sm:h-[350px]">
     {#if $electricLoading}
