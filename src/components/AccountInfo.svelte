@@ -1,5 +1,6 @@
 <script lang="ts">
   import { activeAccount, getServiceAddress, getMeterNumber } from '../lib/data';
+  import { auth } from '../lib/auth';
 
   const address = getServiceAddress();
   const maskedAccount = '****' + activeAccount.account.slice(-4);
@@ -35,5 +36,12 @@
         {/each}
       </div>
     </div>
+
+    <button
+      onclick={() => auth.logout()}
+      class="text-text-dim hover:text-negative text-sm transition-colors cursor-pointer text-left mt-1"
+    >
+      Sign Out
+    </button>
   </div>
 </div>
