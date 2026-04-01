@@ -1,6 +1,5 @@
 <script lang="ts">
   import { activeAccount, accountLoading, accountError, getServiceAddress, getMeterNumber } from '../lib/data';
-  import { auth } from '../lib/auth';
 </script>
 
 <div class="bg-surface rounded-2xl border border-border p-6 flex flex-col gap-4">
@@ -45,13 +44,6 @@
           {/each}
         </div>
       </div>
-
-      <button
-        onclick={() => auth.logout()}
-        class="text-text-dim hover:text-negative text-sm transition-colors cursor-pointer text-left mt-1"
-      >
-        Sign Out
-      </button>
     </div>
   {/if}
 </div>
