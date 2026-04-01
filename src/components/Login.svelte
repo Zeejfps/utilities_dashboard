@@ -34,7 +34,7 @@
     <div class="text-center mb-8">
       <div class="flex items-center justify-center gap-3 mb-4">
         <img src="/hsv_utils_logo.png" alt="" class="h-14" />
-        <span class="text-white text-2xl font-semibold tracking-tight">Huntsville Utilities</span>
+        <span class="text-white text-2xl font-semibold tracking-tight">Utilities Dashboard</span>
       </div>
       <p class="text-text-muted text-sm">Sign in to your account</p>
     </div>
