@@ -25,7 +25,10 @@
 <div class="min-h-screen bg-bg flex items-center justify-center px-4">
   <div class="w-full max-w-sm">
     <div class="text-center mb-8">
-      <img src="/logo.png" alt={domain.name} class="h-12 mx-auto mb-6" />
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <img src="/hsv_utils_logo.png" alt="" class="h-14" />
+        <span class="text-white text-2xl font-semibold tracking-tight">Huntsville Utilities</span>
+      </div>
       <p class="text-text-muted text-sm">Sign in to your account</p>
     </div>
 
