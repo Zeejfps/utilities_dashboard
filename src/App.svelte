@@ -1,5 +1,6 @@
 <script lang="ts">
   import { auth } from './lib/auth';
+  import { loadAccountData } from './lib/data';
   import Login from './components/Login.svelte';
   import Header from './components/Header.svelte';
   import BillCard from './components/BillCard.svelte';
@@ -8,6 +9,12 @@
   import UsageChart from './components/UsageChart.svelte';
   import QuickLinks from './components/QuickLinks.svelte';
   import Footer from './components/Footer.svelte';
+
+  $effect(() => {
+    if ($auth.token) {
+      loadAccountData();
+    }
+  });
 </script>
 
 {#if $auth.token}

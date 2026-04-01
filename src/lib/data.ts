@@ -1,9 +1,12 @@
+import { writable } from 'svelte/store';
 import electricData from '../../data/electric_2.json';
 import customerOverviewData from '../../data/customer_overview.json';
 import lastBilledData from '../../data/last_billed.json';
 import domainData from '../../data/domain.json';
 import homeData from '../../data/home.json';
-import userDataRaw from '../../data/user_data.json';
+
+import { fetchUserData } from './api';
+import { getAuth } from './auth';
 
 import type {
   ElectricData,
@@ -13,6 +16,8 @@ import type {
   QuickLink,
   UserDataAccount,
 } from './types';
+
+// --- Static data (no API endpoints yet) ---
 
 export const electric = electricData as ElectricData;
 
@@ -33,27 +38,49 @@ export const quickLinks: QuickLink[] = [
   home.customQuickLink5,
 ];
 
-export const activeAccount = (userDataRaw as UserDataAccount[]).find(
-  (a) => !a.inactive
-)!;
-
 export function getChartData() {
   return [...electric.pastYearOverviewData].reverse();
 }
 
-export function getMeterNumber(): string {
-  const loc = activeAccount.serviceLocationIdToServiceLocationSummary[
-    activeAccount.primaryServiceLocationId
+// --- Live data (fetched from API) ---
+
+export const activeAccount = writable<UserDataAccount | null>(null);
+export const accountLoading = writable(true);
+export const accountError = writable<string | null>(null);
+
+export async function loadAccountData() {
+  const { username } = getAuth();
+  if (!username) return;
+
+  accountLoading.set(true);
+  accountError.set(null);
+
+  try {
+    const accounts = await fetchUserData(username);
+    const active = accounts.find((a) => !a.inactive) ?? null;
+    activeAccount.set(active);
+  } catch (err: any) {
+    accountError.set(err.message);
+  } finally {
+    accountLoading.set(false);
+  }
+}
+
+// --- Helper functions (now work with store values) ---
+
+export function getMeterNumber(account: UserDataAccount): string {
+  const loc = account.serviceLocationIdToServiceLocationSummary[
+    account.primaryServiceLocationId
   ];
   const meters = Object.keys(loc?.meterNumbersToExternalMeterBaseIds ?? {});
   return meters[0] ?? 'N/A';
 }
 
-export function getServiceAddress(): string {
-  const loc = activeAccount.serviceLocationIdToServiceLocationSummary[
-    activeAccount.primaryServiceLocationId
+export function getServiceAddress(account: UserDataAccount): string {
+  const loc = account.serviceLocationIdToServiceLocationSummary[
+    account.primaryServiceLocationId
   ];
-  if (!loc) return activeAccount.address;
+  if (!loc) return account.address;
   const a = loc.address;
   return `${a.addr1}, ${a.city}, ${a.state} ${a.zip}`;
 }

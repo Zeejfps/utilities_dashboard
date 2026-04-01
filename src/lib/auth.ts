@@ -56,3 +56,9 @@ function createAuth() {
 }
 
 export const auth = createAuth();
+
+export function getAuth() {
+  let current: AuthState = { token: null, username: null, expiration: null };
+  auth.subscribe((v) => (current = v))();
+  return current;
+}
