@@ -1,11 +1,8 @@
-import { writable } from 'svelte/store';
-import electricData from '../../data/electric_2.json';
-import customerOverviewData from '../../data/customer_overview.json';
-import lastBilledData from '../../data/last_billed.json';
+import { writable, get } from 'svelte/store';
 import domainData from '../../data/domain.json';
 import homeData from '../../data/home.json';
 
-import { fetchUserData } from './api';
+import { fetchUserData, fetchCustomerOverview, fetchLastBilled, fetchUsageOverview } from './api';
 import { getAuth } from './auth';
 
 import type {
@@ -19,13 +16,6 @@ import type {
 
 // --- Static data (no API endpoints yet) ---
 
-export const electric = electricData as ElectricData;
-
-export const billing: CustomerOverview = {
-  ...(customerOverviewData as CustomerOverview[])[0],
-  ...(lastBilledData as CustomerOverview[])[0],
-};
-
 export const domain = (domainData as DomainConfig[])[0];
 
 const home = homeData as HomeConfig;
@@ -38,15 +28,36 @@ export const quickLinks: QuickLink[] = [
   home.customQuickLink5,
 ];
 
-export function getChartData() {
-  return [...electric.pastYearOverviewData].reverse();
-}
+// --- Live data stores ---
 
-// --- Live data (fetched from API) ---
+export const billing = writable<CustomerOverview | null>(null);
+export const billingLoading = writable(true);
+
+export const electric = writable<ElectricData | null>(null);
+export const electricLoading = writable(true);
 
 export const activeAccount = writable<UserDataAccount | null>(null);
 export const accountLoading = writable(true);
 export const accountError = writable<string | null>(null);
+
+// --- Data loaders ---
+
+export async function loadBillingData() {
+  const { username } = getAuth();
+  if (!username) return;
+
+  billingLoading.set(true);
+  try {
+    const overview = await fetchCustomerOverview(username);
+    const enriched = await fetchLastBilled(overview);
+    // Merge first entries (last-billed enriches overview with lastPayment fields)
+    billing.set({ ...overview[0], ...enriched[0] });
+  } catch (err: any) {
+    console.error('Failed to load billing data:', err);
+  } finally {
+    billingLoading.set(false);
+  }
+}
 
 export async function loadAccountData() {
   const { username } = getAuth();
@@ -59,6 +70,11 @@ export async function loadAccountData() {
     const accounts = await fetchUserData(username);
     const active = accounts.find((a) => !a.inactive) ?? null;
     activeAccount.set(active);
+
+    // Once we have the active account, load electric usage
+    if (active) {
+      await loadElectricData(active.account, active.primaryServiceLocationId);
+    }
   } catch (err: any) {
     accountError.set(err.message);
   } finally {
@@ -66,7 +82,27 @@ export async function loadAccountData() {
   }
 }
 
-// --- Helper functions (now work with store values) ---
+async function loadElectricData(account: string, serviceLocation: string) {
+  electricLoading.set(true);
+  try {
+    const data = await fetchUsageOverview(account, serviceLocation, 'ELECTRIC');
+    electric.set(data);
+  } catch (err: any) {
+    console.error('Failed to load electric data:', err);
+  } finally {
+    electricLoading.set(false);
+  }
+}
+
+export async function loadAllData() {
+  await Promise.all([loadBillingData(), loadAccountData()]);
+}
+
+// --- Helper functions ---
+
+export function getChartData(data: ElectricData) {
+  return [...data.pastYearOverviewData].reverse();
+}
 
 export function getMeterNumber(account: UserDataAccount): string {
   const loc = account.serviceLocationIdToServiceLocationSummary[

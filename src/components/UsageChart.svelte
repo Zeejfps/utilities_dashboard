@@ -13,7 +13,7 @@
     Legend,
     Filler,
   } from 'chart.js';
-  import { getChartData } from '../lib/data';
+  import { electric, electricLoading, getChartData } from '../lib/data';
   import { formatMonth } from '../lib/format';
 
   ChartJS.register(
@@ -29,14 +29,14 @@
     Filler
   );
 
-  const chartData = getChartData();
-  const labels = chartData.map((d) => formatMonth(d.month, d.year));
-
   type ViewMode = 'both' | 'usage' | 'cost';
   let viewMode: ViewMode = $state('both');
 
-  const barColors = chartData.map((_, i) =>
-    i === chartData.length - 1 ? '#00a86b' : '#007749'
+  const chartData = $derived($electric ? getChartData($electric) : []);
+  const labels = $derived(chartData.map((d) => formatMonth(d.month, d.year)));
+
+  const barColors = $derived(
+    chartData.map((_, i) => (i === chartData.length - 1 ? '#00a86b' : '#007749'))
   );
 
   const data = $derived({
@@ -187,6 +187,16 @@
   </div>
 
   <div class="h-[300px] sm:h-[350px]">
-    <Chart type="bar" {data} {options} />
+    {#if $electricLoading}
+      <div class="h-full flex items-center justify-center">
+        <p class="text-text-dim text-sm">Loading usage data...</p>
+      </div>
+    {:else if $electric && chartData.length > 0}
+      <Chart type="bar" {data} {options} />
+    {:else}
+      <div class="h-full flex items-center justify-center">
+        <p class="text-text-dim text-sm">No usage data available</p>
+      </div>
+    {/if}
   </div>
 </div>
