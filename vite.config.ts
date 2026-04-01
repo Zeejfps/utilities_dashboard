@@ -3,7 +3,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base: '/utilities_app/',
+  base: '/utilities_dashboard/',
   plugins: [svelte(), tailwindcss()],
   server: {
     proxy: {
