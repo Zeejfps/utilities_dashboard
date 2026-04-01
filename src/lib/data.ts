@@ -1,6 +1,5 @@
 import { writable, get } from 'svelte/store';
 import domainData from '../../data/domain.json';
-import homeData from '../../data/home.json';
 
 import { fetchUserData, fetchCustomerOverview, fetchLastBilled, fetchUsageOverview } from './api';
 import { getAuth } from './auth';
@@ -9,24 +8,12 @@ import type {
   ElectricData,
   CustomerOverview,
   DomainConfig,
-  HomeConfig,
-  QuickLink,
   UserDataAccount,
 } from './types';
 
 // --- Static data (no API endpoints yet) ---
 
 export const domain = (domainData as DomainConfig[])[0];
-
-const home = homeData as HomeConfig;
-
-export const quickLinks: QuickLink[] = [
-  home.customQuickLink1,
-  home.customQuickLink2,
-  home.customQuickLink3,
-  home.customQuickLink4,
-  home.customQuickLink5,
-];
 
 // --- Live data stores ---
 

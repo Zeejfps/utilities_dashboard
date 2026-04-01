@@ -14,7 +14,6 @@
 ## Still using static JSON (need to capture endpoints)
 
 - [ ] `domain.json` — Utility name, phone number, branding (Header, Footer)
-- [ ] `home.json` — Quick links (QuickLinks)
 
 ## How to capture missing endpoints
 

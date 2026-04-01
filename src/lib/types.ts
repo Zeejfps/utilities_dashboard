@@ -40,19 +40,6 @@ export interface DomainConfig {
   imageResource: string;
 }
 
-export interface QuickLink {
-  link: string;
-  text: string;
-}
-
-export interface HomeConfig {
-  customQuickLink1: QuickLink;
-  customQuickLink2: QuickLink;
-  customQuickLink3: QuickLink;
-  customQuickLink4: QuickLink;
-  customQuickLink5: QuickLink;
-}
-
 export interface ServiceLocationAddress {
   addr1: string;
   city: string;

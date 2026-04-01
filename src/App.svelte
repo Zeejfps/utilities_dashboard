@@ -7,7 +7,7 @@
   import UsageSnapshot from './components/UsageSnapshot.svelte';
   import AccountInfo from './components/AccountInfo.svelte';
   import UsageChart from './components/UsageChart.svelte';
-  import QuickLinks from './components/QuickLinks.svelte';
+
   import Footer from './components/Footer.svelte';
 
   $effect(() => {
@@ -30,8 +30,6 @@
       </div>
 
       <UsageChart />
-
-      <QuickLinks />
     </main>
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
