@@ -1,19 +1,12 @@
 import { writable, get } from 'svelte/store';
-import domainData from '../../data/domain.json';
-
 import { fetchUserData, fetchCustomerOverview, fetchLastBilled, fetchUsageOverview } from './api';
 import { getAuth } from './auth';
 
 import type {
   ElectricData,
   CustomerOverview,
-  DomainConfig,
   UserDataAccount,
 } from './types';
-
-// --- Static data (no API endpoints yet) ---
-
-export const domain = (domainData as DomainConfig[])[0];
 
 // --- Live data stores ---
 

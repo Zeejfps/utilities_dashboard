@@ -1,6 +1,6 @@
 <script lang="ts">
   import { auth } from '../lib/auth';
-  import { domain } from '../lib/data';
+
 
   let email = $state('');
   let password = $state('');
@@ -32,8 +32,8 @@
 <div class="min-h-screen bg-bg flex items-center justify-center px-4">
   <div class="w-full max-w-sm">
     <div class="text-center mb-8">
-      <div class="flex items-center justify-center gap-3 mb-4">
-        <img src="{import.meta.env.BASE_URL}logo.png" alt="" class="h-14" />
+      <div class="inline-flex items-center gap-3 mb-4">
+        <img src="{import.meta.env.BASE_URL}logo.png" alt="" class="h-18" />
         <span class="text-white text-2xl font-semibold tracking-tight">Utilities Dashboard</span>
       </div>
       <p class="text-text-muted text-sm">Sign in to your account</p>
@@ -104,9 +104,6 @@
       </button>
     </form>
 
-    <p class="text-text-dim text-xs text-center mt-6">
-      {domain.name} &bull; {domain.phoneNumber}
-    </p>
   </div>
 </div>
 
