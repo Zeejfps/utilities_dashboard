@@ -1,5 +1,6 @@
 import { get } from 'svelte/store';
 import { auth } from './auth';
+import { API_BASE } from './config';
 import type { UserDataAccount, CustomerOverview, ElectricData } from './types';
 
 function getAuthState() {
@@ -13,7 +14,7 @@ function getAuthState() {
 async function apiGet<T>(path: string, params?: Record<string, string>): Promise<T> {
   const { token, username } = getAuthState();
 
-  const url = new URL(`/api/${path}`, window.location.origin);
+  const url = new URL(`${API_BASE}/${path}`, window.location.origin);
   if (params) {
     for (const [k, v] of Object.entries(params)) {
       url.searchParams.set(k, v);
@@ -45,7 +46,7 @@ async function apiGet<T>(path: string, params?: Record<string, string>): Promise
 async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const { token, username } = getAuthState();
 
-  const res = await fetch(`/api/${path}`, {
+  const res = await fetch(`${API_BASE}/${path}`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',

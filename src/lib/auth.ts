@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { resetData } from './data';
+import { API_BASE } from './config';
 
 interface AuthState {
   token: string | null;
@@ -24,7 +25,7 @@ function createAuth() {
   return {
     subscribe,
     login: async (userId: string, password: string): Promise<void> => {
-      const res = await fetch('/api/oauth/auth/v2', {
+      const res = await fetch(`${API_BASE}/oauth/auth/v2`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ userId, password }),
