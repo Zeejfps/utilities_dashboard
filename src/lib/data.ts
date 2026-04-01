@@ -27,6 +27,23 @@ export const activeAccount = writable<UserDataAccount | null>(null);
 export const accountLoading = writable(true);
 export const accountError = writable<string | null>(null);
 
+// --- Load guard ---
+
+let loading = false;
+let loaded = false;
+
+export function resetData() {
+  loading = false;
+  loaded = false;
+  billing.set(null);
+  billingLoading.set(true);
+  electric.set(null);
+  electricLoading.set(true);
+  activeAccount.set(null);
+  accountLoading.set(true);
+  accountError.set(null);
+}
+
 // --- Data loaders ---
 
 export async function loadBillingData() {
@@ -82,7 +99,14 @@ async function loadElectricData(account: string, serviceLocation: string) {
 }
 
 export async function loadAllData() {
-  await Promise.all([loadBillingData(), loadAccountData()]);
+  if (loading || loaded) return;
+  loading = true;
+  try {
+    await Promise.all([loadBillingData(), loadAccountData()]);
+    loaded = true;
+  } finally {
+    loading = false;
+  }
 }
 
 // --- Helper functions ---

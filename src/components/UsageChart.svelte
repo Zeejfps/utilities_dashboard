@@ -212,8 +212,10 @@
 
   <div class="h-[300px] sm:h-[350px]">
     {#if $electricLoading}
-      <div class="h-full flex items-center justify-center">
-        <p class="text-text-dim text-sm">Loading usage data...</p>
+      <div class="h-full flex items-end gap-2 sm:gap-3 px-2 pb-6 animate-pulse">
+        {#each [40, 65, 55, 80, 90, 70, 50, 45, 60, 75, 85, 55, 48] as h}
+          <div class="flex-1 bg-border rounded-t" style="height: {h}%"></div>
+        {/each}
       </div>
     {:else if $electric && chartData.length > 0}
       <Chart type="bar" {data} {options} />

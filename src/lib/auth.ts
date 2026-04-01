@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { resetData } from './data';
 
 interface AuthState {
   token: string | null;
@@ -50,6 +51,7 @@ function createAuth() {
     },
     logout: () => {
       sessionStorage.removeItem('auth');
+      resetData();
       set({ token: null, username: null, expiration: null });
     },
   };
