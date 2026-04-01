@@ -30,13 +30,13 @@ function createAuth() {
       });
 
       if (!res.ok) {
-        throw new Error('Login failed');
+        throw new Error('Failed to sign in. Please try again.');
       }
 
       const data = await res.json();
 
       if (data.status !== 'SUCCESS') {
-        throw new Error(data.status || 'Login failed');
+        throw new Error('Failed to sign in. Please check your email and password.');
       }
 
       const state: AuthState = {
